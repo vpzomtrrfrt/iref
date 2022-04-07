@@ -13,4 +13,5 @@ readme = "README.md"
 
 [dependencies]
 pct-str = "1.0"
+serde = { version = "1.0.136", optional = true }
 smallvec = "1.2"

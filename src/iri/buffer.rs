@@ -329,3 +329,18 @@ impl Hash for IriBuf {
 		self.as_iri_ref().hash(hasher)
 	}
 }
+
+#[cfg(feature = "serde")]
+impl serde::Serialize for IriBuf {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+		serializer.serialize_str(self.as_str())
+	}
+}
+
+#[cfg(feature = "serde")]
+impl<'a> serde::Deserialize<'a> for IriBuf {
+	fn deserialize<D: serde::Deserializer<'a>>(deserializer: D) -> Result<Self, D::Error> {
+		let src: String = serde::Deserialize::deserialize(deserializer)?;
+		Self::from_string(src).map_err(|(err, _)| serde::de::Error::custom(err))
+	}
+}

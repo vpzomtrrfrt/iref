@@ -553,6 +553,21 @@ impl<'a> Hash for IriRef<'a> {
 	}
 }
 
+#[cfg(feature = "serde")]
+impl<'a> serde::Serialize for IriRef<'a> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+		serializer.serialize_str(self.as_str())
+	}
+}
+
+#[cfg(feature = "serde")]
+impl<'a> serde::Deserialize<'a> for IriRef<'a> {
+	fn deserialize<D: serde::Deserializer<'a>>(deserializer: D) -> Result<Self, D::Error> {
+		let src: &str = serde::Deserialize::deserialize(deserializer)?;
+		Self::from_str(src).map_err(serde::de::Error::custom)
+	}
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
